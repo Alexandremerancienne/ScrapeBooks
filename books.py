@@ -3,11 +3,15 @@ from bs4 import BeautifulSoup
 import csv
 
 
-def scrape_product(product_page_url):
-    """Function designed to scrape infos from 
-    product page URL and stock them into CSV file"""
+def scrape_book(book_url):
+    """Function designed to scrape infos from book URL
 
-    response = requests.get(product_page_url)
+    Output : 
+
+    - scraped infos
+    - .csv file with book title"""
+
+    response = requests.get(book_url)
     if response.ok:
         soup = BeautifulSoup(response.text, 'html.parser')
         information_table = soup.find('table', class_='table table-striped').find_all('td')
@@ -24,10 +28,12 @@ def scrape_product(product_page_url):
         review_rating = soup.find('p', class_='star-rating')['class'][1]
         picture_url = soup.find('div', class_='item active').find('img')['src'].replace('../..', 'http://books.toscrape.com')
 
-        with open(title + '.csv', 'w', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile, delimiter = ';')
-            csvfile.write('Product Page URL ; Universal Product Code (UPC) ; Title ; Price Including Tax ; Price Excluding Tax ; Availability ; Product Description ; Category ; Review Rating ; Image URL ; \n')
-            csvfile.write(product_page_url + ';' + universal_product_code + ';' + title + ';' + price_includ_tax + ';' + price_exclud_tax + ';' + number_available + ';' + product_description + ';' + category + ';' + review_rating + ';' + picture_url + '\n')
+        file = open(title + '.csv', 'w', encoding='utf-8') 
+        file.write('Product Page URL ; Universal Product Code (UPC) ; Title ; Price Including Tax ; Price Excluding Tax ; Availability ; Product Description ; Category ; Review Rating ; Picture URL ; \n')
+        file.write(book_url + ';' + universal_product_code + ';' + title + ';' + price_includ_tax + ';' + price_exclud_tax + ';' + number_available + ';' + product_description + ';' + category + ';' + review_rating + ';' + picture_url + '\n')
+        file.close()
+
+# Testing function 
 
 if __name__ == '__main__':
-    scrape_product('http://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
+    scrape_book('http://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
