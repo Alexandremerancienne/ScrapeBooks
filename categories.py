@@ -26,13 +26,10 @@ def scrape_category(category_url):
 			txtfile.close()
 			
 			txtfile = open(category + '.txt', 'r')
-			csvfile = open (category + '.csv', 'w', encoding='utf-8')
-			csvfile.write('Product Page URL ; Universal Product Code (UPC) ; Title ; Price Including Tax ; Price Excluding Tax ; Availability ; Product Description ; Category ; Review Rating ; Picture URL ; \n')
 			for row in txtfile:
 				book_url = row.strip()
 				scrape_book(book_url)
 			txtfile.close()
-			csvfile.close()
 
 # Testing function
 
