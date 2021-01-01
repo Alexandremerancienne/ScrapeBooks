@@ -5,9 +5,7 @@ import csv
 
 def scrape_book(book_url):
     """Function designed to scrape infos from book URL
-
     Output : 
-
     - scraped infos
     - .csv file with book title"""
 
@@ -28,10 +26,13 @@ def scrape_book(book_url):
         review_rating = soup.find('p', class_='star-rating')['class'][1]
         picture_url = soup.find('div', class_='item active').find('img')['src'].replace('../..', 'http://books.toscrape.com')
 
-        file = open(title + '.csv', 'w', encoding='utf-8') 
-        file.write('Product Page URL ; Universal Product Code (UPC) ; Title ; Price Including Tax ; Price Excluding Tax ; Availability ; Product Description ; Category ; Review Rating ; Picture URL ; \n')
-        file.write(book_url + ';' + universal_product_code + ';' + title + ';' + price_includ_tax + ';' + price_exclud_tax + ';' + number_available + ';' + product_description + ';' + category + ';' + review_rating + ';' + picture_url + '\n')
-        file.close()
+        book_features = [book_url, universal_product_code, title, price_includ_tax, price_exclud_tax, number_available, product_description, category, review_rating, picture_url]
+        with open(title + '.csv', 'w', newline ='', encoding='utf-8') as csvfile: 
+            writer = csv.writer(csvfile, delimiter=';')
+            writer.writerow(['Product Page URL', 'Universal Product Code (UPC)', 'Title', 'Price Including Tax', 'Price Excluding Tax', 'Availability', 'Product Description', 'Category', 'Review Rating', 'Picture URL'])
+            writer.writerow(book_features)
+
+            
 
 # Testing function 
 
