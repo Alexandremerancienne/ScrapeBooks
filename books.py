@@ -36,7 +36,7 @@ def get_book_description_from_url(book_url):
         return [book_url, universal_product_code, title, price_includ_tax, price_exclud_tax, number_available, product_description, category, review_rating, picture_url]       
 
 def save_book_description_to_csv(book_url):
-    """Function designed collected infos in a CSV file"""
+    """Function saving book description to CSV file"""
     
     book_description = get_book_description_from_url(book_url)
     title = book_description[2]
