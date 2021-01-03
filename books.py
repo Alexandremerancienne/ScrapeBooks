@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 
 def get_book_description_from_url(book_url):
-    """Function scraping the following infos from book URL : 
+    """Function scraping the following info from book URL : 
     - Universal Product Code (UPC)
     - Title
     - Price including tax
@@ -26,7 +26,7 @@ def get_book_description_from_url(book_url):
         price_exclud_tax = table[2].text
         number_available = table[5].text
         if soup.find('div', id='product_description'):
-            product_description = soup.h2.find_next('p').text.replace(';','')
+            product_description = soup.h2.find_next('p').text
         else:
             product_description = "No description available"
         category = soup.find('ul', class_='breadcrumb').find_all('a')[2].text
@@ -36,7 +36,7 @@ def get_book_description_from_url(book_url):
         return [book_url, universal_product_code, title, price_includ_tax, price_exclud_tax, number_available, product_description, category, review_rating, picture_url]       
 
 def save_book_description_to_csv(book_url):
-    """Function saving collected infos into CSV file"""
+    """Function designed collected infos in a CSV file"""
     
     book_description = get_book_description_from_url(book_url)
     title = book_description[2]
@@ -48,4 +48,4 @@ def save_book_description_to_csv(book_url):
 # Testing function 
 
 if __name__ == '__main__':
-    save_book_description_to_csv('http://books.toscrape.com/catalogue/dont-be-a-jerk-and-other-practical-advice-from-dogen-japans-greatest-zen-master_890/index.html')
+    save_book_description_to_csv('http://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
