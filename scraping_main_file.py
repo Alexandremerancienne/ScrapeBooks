@@ -6,8 +6,6 @@ from categories import save_books_pictures_for_category
 
 website_url = 'http://books.toscrape.com/index.html'
 
-# Extraction of the URLs of all categories
-
 response = requests.get(website_url)
 if response.ok:
 	soup = BeautifulSoup(response.content, 'html.parser')
@@ -18,5 +16,9 @@ if response.ok:
 		categories_urls_list.append(category_url)
 
 	for category_url in categories_urls_list:
+
+# Extraction of the URLs of all categories
 		save_books_descriptions_to_csv(category_url)
+
+# Extraction of the cover pictures of all books 
 		save_books_pictures_for_category(category_url)
