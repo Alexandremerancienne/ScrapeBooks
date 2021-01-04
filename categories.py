@@ -1,3 +1,4 @@
+import os.path
 import csv
 
 import requests
@@ -50,13 +51,24 @@ def get_books_descriptions_from_category(category_url):
 
 	return [category, books_descriptions]
 
-def save_books_descriptions_to_csv(category_url):
-	"""Function saving category description to CSV file"""
+def create_folder_for_category(category_url):
+	"""Function creating a folder for each category to visualize output"""
 
 	category_description = get_books_descriptions_from_category(category_url)
 	category = category_description[0]
+	category_folder_path = r'C:/Users/Utilisateur/Desktop/Scraping Program/' + category
+	if not os.path.exists(category_folder_path):
+		os.makedirs(category_folder_path)
+	return category_folder_path
+
+
+def save_books_descriptions_to_csv(category_url):
+	"""Function saving category description to CSV file"""
+	category_folder_path = create_folder_for_category(category_url)
+	category_description = get_books_descriptions_from_category(category_url)
+	category = category_description[0]
 	books_descriptions = category_description[1]
-	with open(category + '.csv', 'w', newline ='', encoding='utf-8-sig') as csvfile:
+	with open(category_folder_path + '/' + category + '.csv', 'w', newline ='', encoding='utf-8-sig') as csvfile:
 		writer = csv.writer(csvfile, delimiter=';')
 		writer.writerow(['Product Page URL', 'Universal Product Code (UPC)', 'Title', 'Price Including Tax', 'Price Excluding Tax', 'Availability', 'Product Description', 'Category', 'Review Rating', 'Picture URL'])
 		writer.writerows(books_descriptions) 
