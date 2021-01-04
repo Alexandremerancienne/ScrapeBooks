@@ -21,12 +21,12 @@ def get_book_description_from_url(book_url):
         soup = BeautifulSoup(response.content, 'html.parser')
         table = soup.find('table', class_='table table-striped').find_all('td')
         universal_product_code = table[0].text
-        title = soup.h1.text.replace(':','-')
+        title = soup.h1.text.replace(':','-').replace('/','-').replace('"', '').replace('*', '.').replace('?','')
         price_includ_tax = table[3].text
         price_exclud_tax = table[2].text
         number_available = table[5].text
         if soup.find('div', id='product_description'):
-            product_description = soup.h2.find_next('p').text
+            product_description = soup.h2.find_next('p').text.replace(':','-')
         else:
             product_description = "No description available"
         category = soup.find('ul', class_='breadcrumb').find_all('a')[2].text
@@ -48,4 +48,4 @@ def save_book_description_to_csv(book_url):
 # Testing function 
 
 if __name__ == '__main__':
-    save_book_description_to_csv('http://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
+    save_book_description_to_csv('http://books.toscrape.com/catalogue/adulthood-is-a-myth-a-sarahs-scribbles-collection_659/index.html')
