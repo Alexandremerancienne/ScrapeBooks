@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from categories import save_books_descriptions_to_csv
+from categories import save_books_pictures_for_category
 
 website_url = 'http://books.toscrape.com/index.html'
 
@@ -18,3 +19,4 @@ if response.ok:
 
 	for category_url in categories_urls_list:
 		save_books_descriptions_to_csv(category_url)
+		save_books_pictures_for_category(category_url)
