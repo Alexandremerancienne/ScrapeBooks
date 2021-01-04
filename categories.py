@@ -1,5 +1,6 @@
 import os.path
 import csv
+import urllib.request
 
 import requests
 from bs4 import BeautifulSoup
@@ -37,7 +38,6 @@ def get_books_urls_from_category(category_url):
 
 	return [category, books_urls]
 
-
 def get_books_descriptions_from_category(category_url):
 	"""Function displaying the content of all books from a category."""	
 
@@ -73,7 +73,18 @@ def save_books_descriptions_to_csv(category_url):
 		writer.writerow(['Product Page URL', 'Universal Product Code (UPC)', 'Title', 'Price Including Tax', 'Price Excluding Tax', 'Availability', 'Product Description', 'Category', 'Review Rating', 'Picture URL'])
 		writer.writerows(books_descriptions) 
 
+def save_books_pictures_for_category(category_url):
+
+	category_folder_path = create_folder_for_category(category_url)
+	category_books_urls = get_books_urls_from_category(category_url)
+	books_urls = category_books_urls[1]
+	for book_url in books_urls:
+		book_description = get_book_description_from_url(book_url)
+		picture_url = book_description[-1]		
+		picture_title = book_description[2]
+		urllib.request.urlretrieve(picture_url, category_folder_path + '/' + picture_title + '.jpg')
+
 # Testing function
 
 if __name__ == '__main__':
-    save_books_descriptions_to_csv('http://books.toscrape.com/catalogue/category/books/mystery_3/index.html')
+    save_books_pictures_for_category('http://books.toscrape.com/catalogue/category/books/mystery_3/index.html')
