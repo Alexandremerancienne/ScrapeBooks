@@ -36,6 +36,7 @@ def get_categories_names_from_website(website_url):
 		return categories_names_list
 
 def create_folders_for_categories(website_url):
+	"""Function creating a folder for each category"""
 
 	categories_names_list = get_categories_names_from_website(website_url)
 
