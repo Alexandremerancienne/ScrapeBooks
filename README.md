@@ -1,7 +1,6 @@
 # scraping_program
 
 Scraping program for a book-selling website
-Contributor: Alexandre MERANCIENNE
 
 # Description
 
