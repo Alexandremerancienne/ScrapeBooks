@@ -1,8 +1,10 @@
-"""This program extends the work realized in books.py program by extracting relevant information for every book of a category.
+"""This program extends the work realized in books.py program \
+by extracting relevant information for every book of a category.
 
 Collected data is sent to a CSV file.
 
-Each category is represented by a folder containing the CSV file, as well as all cover pictures of the books belonging to the same category."""
+Each category is represented by a folder containing the CSV file, \
+as well as all cover pictures of the books in the same category."""
 
 
 import os.path
@@ -41,7 +43,8 @@ def get_books_urls_from_category(category_url):
         category = soup.find('h1').text
         books = soup.find_all('h3')
         for book in books:
-            book_url = book.find('a')['href'].replace('../../../', 'http://books.toscrape.com/catalogue/')
+            url_root = 'http://books.toscrape.com/catalogue/'
+            book_url = book.find('a')['href'].replace('../../../', url_root)
             books_urls.append(book_url)
 
     return [category, books_urls]
@@ -66,7 +69,8 @@ def create_folder_for_category(category_url):
 
     category_description = get_books_descriptions_from_category(category_url)
     category = category_description[0]
-    category_folder_path = r'C:/Users/Utilisateur/Desktop/Scraping Program/' + category
+    category_folder_path = r'C:/Users/Utilisateur/Desktop/Scraping Program/' \
+                           + category + '/'
     if not os.path.exists(category_folder_path):
         os.makedirs(category_folder_path)
     return category_folder_path
@@ -79,14 +83,20 @@ def save_books_descriptions_to_csv(category_url):
     category_description = get_books_descriptions_from_category(category_url)
     category = category_description[0]
     books_descriptions = category_description[1]
-    with open(category_folder_path + '/' + category + '.csv', 'w', newline='', encoding='utf-8-sig') as csvfile:
+    with open(category_folder_path + category
+              + '.csv', 'w', newline='', encoding='utf-8-sig') as csvfile:
         writer = csv.writer(csvfile, delimiter=';')
-        writer.writerow(['Product Page URL', 'Universal Product Code (UPC)', 'Title', 'Price Including Tax', 'Price Excluding Tax', 'Availability', 'Product Description', 'Category', 'Review Rating', 'Picture URL'])
+        writer.writerow(['Product Page URL', 'Universal Product Code (UPC)',
+                         'Title', 'Price Including Tax',
+                         'Price Excluding Tax', 'Availability',
+                         'Product Description', 'Category', 'Review Rating',
+                         'Picture URL'])
         writer.writerows(books_descriptions)
 
 
 def save_books_pictures_for_category(category_url):
-	"""Function uploading the book covers of all the books of a category. The covers are saved as .jpg pictures """  
+    """Function uploading the book covers of all the books of a \
+    category. The covers are saved as .jpg pictures """
 
     category_folder_path = create_folder_for_category(category_url)
     category_books_urls = get_books_urls_from_category(category_url)
@@ -95,10 +105,13 @@ def save_books_pictures_for_category(category_url):
         book_description = get_book_description_from_url(book_url)
         picture_url = book_description[-1]
         picture_title = book_description[2]
-        urllib.request.urlretrieve(picture_url, category_folder_path + '/' + picture_title + '.jpg')
+        urllib.request.urlretrieve(picture_url, category_folder_path
+                                   + picture_title + '.jpg')
 
 # Testing function
 
 
 if __name__ == '__main__':
-    save_books_pictures_for_category('http://books.toscrape.com/catalogue/category/books/mystery_3/index.html')
+    url_root = 'http://books.toscrape.com/catalogue/'
+    category_url = url_root + 'category/books/mystery_3/index.html'
+    save_books_pictures_for_category(category_url)
