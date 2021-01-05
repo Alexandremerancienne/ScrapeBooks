@@ -52,5 +52,5 @@ Once your venv is activated, you must ensure all required Python packages have b
 
 1. Open the requirements.txt file and install all mentioned packages. Make sure you install the correct version of each package (the versions are precised in the requirements file).
 2. Download the files books.py, categories.py and scraping_main_file.py
-3. **IMPORTANT : in categories.py file, line 60 : change folder path to indicate where you want to create your output folder : `category_folder = r'<path/of/your/folder>' + category`**
+3. **IMPORTANT : in categories.py file, line 72 : change folder path to indicate where you want to create your output folder : `category_folder = r'<path/of/your/folder>' + category`**
 4. Run scraping_main_file.py with the following command in your terminal (Windows OS) : `python scraping_main_file.py`
