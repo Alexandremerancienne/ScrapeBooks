@@ -69,10 +69,13 @@ def create_folder_for_category(category_url):
 
     category_description = get_books_descriptions_from_category(category_url)
     category = category_description[0]
-    category_folder_path = r'C:/Users/Utilisateur/Desktop/Scraping Program/' \
-                           + category + '/'
-    if not os.path.exists(category_folder_path):
-        os.makedirs(category_folder_path)
+    try:
+        category_folder_path = r'./Scraping Program/' + category + '/'
+        if not os.path.exists(category_folder_path):
+            os.makedirs(category_folder_path)
+    except FileNotFoundError:
+    	print("Folder cannot be created for the category:", category)
+        
     return category_folder_path
 
 
@@ -114,4 +117,9 @@ def save_books_pictures_for_category(category_url):
 if __name__ == '__main__':
     url_root = 'http://books.toscrape.com/catalogue/'
     category_url = url_root + 'category/books/mystery_3/index.html'
+    get_pages_to_scrap(category_url)
+    get_books_urls_from_category(category_url)
+    get_books_descriptions_from_category(category_url)
+    create_folder_for_category(category_url)
+    save_books_descriptions_to_csv(category_url)
     save_books_pictures_for_category(category_url)
