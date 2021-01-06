@@ -41,10 +41,10 @@ On Windows, a virtual environment, once created, generates a batch file called a
 
 To be used, a venv needs to be activated :
 
-1. Execute activate.bat file in your folder : `\pathto\env\Scripts`
+1. Execute activate.bat file in your folder : `\pathto\env\Scripts` with the command `activate` (Windows OS)
 2. Your file path should change to reflect the activation of your venv.
 
-If needed, you can deactivate your venv by replacing `activate.bat` by `deactivate.bat` in the previous command, and execute it.
+If needed, you can deactivate your venv by replacing `activate` by `deactivate` in the previous command, and execute it.
 
 # Execute script
 
