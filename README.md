@@ -41,7 +41,7 @@ On Windows, a virtual environment, once created, generates a batch file called a
 
 To be used, a venv needs to be activated :
 
-1. Execute activate.bat file : `\pathto\env\Scripts\activate.bat`
+1. Execute activate.bat file in your folder : `\pathto\env\Scripts`
 2. Your file path should change to reflect the activation of your venv.
 
 If needed, you can deactivate your venv by replacing `activate.bat` by `deactivate.bat` in the previous command, and execute it.
@@ -52,5 +52,4 @@ Once your venv is activated, you must ensure all required Python packages have b
 
 1. Open the requirements.txt file and install all mentioned packages. Make sure you install the correct version of each package (the versions are precised in the requirements file).
 2. Download the files books.py, categories.py and scraping_main_file.py
-3. **IMPORTANT : in categories.py file, line 72 : change folder path to indicate where you want to create your output folder : `category_folder = r'<path/of/your/folder>' + category`**
-4. Run scraping_main_file.py with the following command in your terminal (Windows OS) : `python scraping_main_file.py`
+3. Run scraping_main_file.py with the following command in your terminal (Windows OS) : `python scraping_main_file.py`
