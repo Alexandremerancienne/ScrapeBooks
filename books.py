@@ -64,18 +64,23 @@ def save_book_description_to_csv(book_url):
 
     book_description = get_book_description_from_url(book_url)
     title = book_description[2]
-    with open(title + '.csv', 'w', newline='', encoding='utf-8-sig') as file:
-        writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Product Page URL', 'Universal Product Code (UPC)',
-                         'Title', 'Price Including Tax',
-                         'Price Excluding Tax', 'Availability',
-                         'Product Description', 'Category', 'Review Rating',
-                         'Picture URL'])
-        writer.writerow(book_description)
+    try:
+        with open(title + '.csv', 'w', newline='', encoding='utf-8-sig') \
+             as file:
+            writer = csv.writer(file, delimiter=';')
+            writer.writerow(['Product Page URL',
+                             'Universal Product Code (UPC)', 'Title',
+                             'Price Including Tax', 'Price Excluding Tax',
+                             'Availability', 'Product Description',
+                             'Category', 'Review Rating', 'Picture URL'])
+            writer.writerow(book_description)
+    except FileNotFoundError:
+        print("Scraped data cannot be saved to CSV file")
 
 # Testing function
 
 
 if __name__ == '__main__':
     book_url = 'http://books.toscrape.com/catalogue/soumission_998/index.html'
+    get_book_description_from_url(book_url)
     save_book_description_to_csv(book_url)
