@@ -20,6 +20,23 @@ from bs4 import BeautifulSoup
 from slugify import slugify
 
 
+book_name = []
+
+
+def get_book_name(book_url):
+    """Function scraping the name of the category"""
+
+    response = requests.get(book_url)
+    if response.ok:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        name_of_book = soup.h1.text
+        name_of_book = slugify(name_of_book)
+        book_name.append(name_of_book)
+
+
+book_description = []
+
+
 def get_book_description_from_url(book_url):
     """Function scraping the following info from book URL :
     - Universal Product Code (UPC)
@@ -53,20 +70,21 @@ def get_book_description_from_url(book_url):
         url_root = 'http://books.toscrape.com'
         picture_url = picture_url.replace('../..', url_root)
 
-        return [book_url, universal_product_code, slug,
-                price_includ_tax, price_exclud_tax,
-                number_available, summary,
-                category, review_rating, picture_url]
+        book_features = [book_url, universal_product_code, slug,
+                         price_includ_tax, price_exclud_tax,
+                         number_available, summary,
+                         category, review_rating, picture_url]
+        book_description.extend(book_features)
+
+        return book_features
 
 
-def save_book_description_to_csv(book_url):
+def save_book_description_to_csv(book_description):
     """Function saving book description to CSV file"""
 
-    book_description = get_book_description_from_url(book_url)
-    title = book_description[2]
     try:
-        with open(title + '.csv', 'w', newline='', encoding='utf-8-sig') \
-             as file:
+        with open(book_name[0] + '.csv', 'w', newline='',
+                  encoding='utf-8-sig') as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(['Product Page URL',
                              'Universal Product Code (UPC)', 'Title',
@@ -82,5 +100,6 @@ def save_book_description_to_csv(book_url):
 
 if __name__ == '__main__':
     book_url = 'http://books.toscrape.com/catalogue/soumission_998/index.html'
+    get_book_name(book_url)
     get_book_description_from_url(book_url)
-    save_book_description_to_csv(book_url)
+    save_book_description_to_csv(book_description)

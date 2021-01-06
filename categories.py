@@ -17,60 +17,26 @@ from bs4 import BeautifulSoup
 from books import get_book_description_from_url
 
 
-def get_pages_to_scrap(category_url):
-    """Function giving the number of pages to scrap for a category"""
-
-    pages_to_scrap = []
-    first_page = category_url
-    pages_to_scrap.append(first_page)
-    for i in range(2, 9):
-        page_no_i = first_page.replace('index', 'page-' + str(i))
-        response = requests.get(page_no_i)
-        if response.ok:
-            pages_to_scrap.append(page_no_i)
-
-    return pages_to_scrap
+category_name = []
 
 
-def get_books_urls_from_category(category_url):
-    """Function displaying all books' URLs from a category"""
+def get_category_name(category_url):
+	"""Function scraping the name of the category"""
 
-    books_urls = []
-    pages_to_scrap = get_pages_to_scrap(category_url)
-    for page in pages_to_scrap:
-        response = requests.get(page)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        category = soup.find('h1').text
-        books = soup.find_all('h3')
-        for book in books:
-            url_root = 'http://books.toscrape.com/catalogue/'
-            book_url = book.find('a')['href'].replace('../../../', url_root)
-            books_urls.append(book_url)
+	response = requests.get(category_url)
+	if response.ok:
+		soup = BeautifulSoup(response.content, 'html.parser')
+		name_of_category = soup.find('h1').text
+		category_name.append(name_of_category)
 
-    return [category, books_urls]
+	return name_of_category
 
 
-def get_books_descriptions_from_category(category_url):
-    """Function displaying the content of all books from a category."""
-
-    books_descriptions = []
-    category_books_urls = get_books_urls_from_category(category_url)
-    category = category_books_urls[0]
-    books_urls_list = category_books_urls[1]
-    for book_url in books_urls_list:
-        book_description = get_book_description_from_url(book_url)
-        books_descriptions.append(book_description)
-
-    return [category, books_descriptions]
-
-
-def create_folder_for_category(category_url):
+def create_folder_for_category(category_name):
     """Function creating a folder for each category to visualize output"""
 
-    category_description = get_books_descriptions_from_category(category_url)
-    category = category_description[0]
     try:
-        category_folder_path = r'./Scraping Program/' + category + '/'
+        category_folder_path = r'./Scraping Program/' + category_name[-1] + '/'
         if not os.path.exists(category_folder_path):
             os.makedirs(category_folder_path)
     except FileNotFoundError:
@@ -79,32 +45,83 @@ def create_folder_for_category(category_url):
     return category_folder_path
 
 
-def save_books_descriptions_to_csv(category_url):
+pages_to_scrape = []
+
+
+def get_category_pages_to_scrape(category_url):
+    """Function giving the number of pages to scrap for a category"""
+
+    number_of_pages = 0
+    first_page = category_url
+    pages_to_scrape.append(first_page)
+    for i in range(2, 9):
+        page_no_i = first_page.replace('index', 'page-' + str(i))
+        response = requests.get(page_no_i)        
+        if response.ok:
+        	number_of_pages +=1
+        	pages_to_scrape.append(page_no_i)
+     
+    return pages_to_scrape[(-1-number_of_pages):]
+
+
+category_books_urls = []
+
+
+def get_category_books_urls(pages_to_scrape):
+    """Function displaying the URLs of all the books from a category"""
+
+    number_of_urls = 0
+    for page in pages_to_scrape:
+        response = requests.get(page)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        books = soup.find_all('h3')
+        for book in books:
+            url_root = 'http://books.toscrape.com/catalogue/'
+            book_url = book.find('a')['href'].replace('../../../', url_root)
+            category_books_urls.append(book_url)
+            number_of_urls +=1
+
+    return category_books_urls[(-number_of_urls):]
+
+
+category_books_descriptions = []
+
+
+def get_category_books_descriptions(category_books_urls):
+    """Function displaying the content of all the books from a category."""
+
+    number_of_books_descriptions = 0
+    for category_book_url in category_books_urls:
+        category_book_description = get_book_description_from_url(category_book_url)
+        category_books_descriptions.append(category_book_description)
+        number_of_books_descriptions +=1
+    return category_books_descriptions[(-number_of_books_descriptions):]
+
+
+def save_books_descriptions_to_csv(category_books_descriptions):
     """Function saving category description to CSV file"""
 
-    category_folder_path = create_folder_for_category(category_url)
-    category_description = get_books_descriptions_from_category(category_url)
-    category = category_description[0]
-    books_descriptions = category_description[1]
-    with open(category_folder_path + category
-              + '.csv', 'w', newline='', encoding='utf-8-sig') as csvfile:
-        writer = csv.writer(csvfile, delimiter=';')
-        writer.writerow(['Product Page URL', 'Universal Product Code (UPC)',
-                         'Title', 'Price Including Tax',
-                         'Price Excluding Tax', 'Availability',
-                         'Product Description', 'Category', 'Review Rating',
-                         'Picture URL'])
-        writer.writerows(books_descriptions)
+    try:
+    	category_folder_path = create_folder_for_category(category_name)
+    	with open(category_folder_path + category_name[-1]
+                  + '.csv', 'w', newline='', encoding='utf-8-sig') as csvfile:
+            writer = csv.writer(csvfile, delimiter=';')
+            writer.writerow(['Product Page URL', 
+            	             'Universal Product Code (UPC)', 'Title', 
+            	             'Price Including Tax', 'Price Excluding Tax', 
+            	             'Availability', 'Product Description', 
+            	             'Category', 'Review Rating', 'Picture URL'])
+            writer.writerows(category_books_descriptions)
+    except FileNotFoundError:
+        print("Scraped data cannot be saved to CSV file")
 
 
-def save_books_pictures_for_category(category_url):
-    """Function uploading the book covers of all the books of a \
+def save_books_pictures_for_category(category_books_urls):
+    """Function uploading the book covers of all the books from a \
     category. The covers are saved as .jpg pictures """
 
-    category_folder_path = create_folder_for_category(category_url)
-    category_books_urls = get_books_urls_from_category(category_url)
-    books_urls = category_books_urls[1]
-    for book_url in books_urls:
+    category_folder_path = create_folder_for_category(category_name)
+    for book_url in category_books_urls:
         book_description = get_book_description_from_url(book_url)
         picture_url = book_description[-1]
         picture_title = book_description[2]
@@ -117,9 +134,10 @@ def save_books_pictures_for_category(category_url):
 if __name__ == '__main__':
     url_root = 'http://books.toscrape.com/catalogue/'
     category_url = url_root + 'category/books/mystery_3/index.html'
-    get_pages_to_scrap(category_url)
-    get_books_urls_from_category(category_url)
-    get_books_descriptions_from_category(category_url)
-    create_folder_for_category(category_url)
-    save_books_descriptions_to_csv(category_url)
-    save_books_pictures_for_category(category_url)
+    get_category_name(category_url)
+    create_folder_for_category(category_name)
+    get_category_pages_to_scrape(category_url)
+    get_category_books_urls(pages_to_scrape)
+    get_category_books_descriptions(category_books_urls)
+    save_books_descriptions_to_csv(category_books_descriptions)
+    save_books_pictures_for_category(category_books_urls)
