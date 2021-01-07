@@ -31,7 +31,14 @@ previously defined by the following programs :
 import requests
 from bs4 import BeautifulSoup
 
-from categories import *
+from categories import category_name
+from categories import get_category_name
+from categories import create_folder_for_category
+from categories import get_category_pages_to_scrape
+from categories import get_category_books_urls
+from categories import get_category_books_descriptions
+from categories import save_books_descriptions_to_csv
+from categories import save_books_pictures_for_category
 
 website_url = 'http://books.toscrape.com/index.html'
 
@@ -46,37 +53,37 @@ if response.ok:
         category_url = 'http://books.toscrape.com/' + category_tag.get('href')
         categories_urls_list.append(category_url)
 
-    # For each category extracted :
+    # For each category URL extracted :
 
     for category_url in categories_urls_list:
 
         # Scraping of the name of the category
 
-    	name_of_category = get_category_name(category_url)
+        name_of_category = get_category_name(category_url)
 
         # Creation of a folder dedicated to this category
 
-    	create_folder_for_category(category_name)
+        create_folder_for_category(category_name)
 
         # Extraction of the number of pages to scrape
 
-    	scraped_pages = get_category_pages_to_scrape(category_url)
+        scraped_pages = get_category_pages_to_scrape(category_url)
 
-        # For every page scraped, extraction of the URLs of all books 
+        # For every page scraped, extraction of the URLs of all books
         # Belonging to the same category
 
-    	category_urls = get_category_books_urls(scraped_pages)
+        category_urls = get_category_books_urls(scraped_pages)
 
         # Extraction of every book description from the URLs collected
 
-    	category_descriptions = get_category_books_descriptions(category_urls)
+        category_descriptions = get_category_books_descriptions(category_urls)
 
-        # For each category, transfer of all the books' descriptions 
-        # to a CSV file. 
+        # For each category, transfer of all the books' descriptions
+        # to a CSV file.
         # Each CSV file is located in the folder dedicated to the category
 
-    	save_books_descriptions_to_csv(category_descriptions)
+        save_books_descriptions_to_csv(category_descriptions)
 
         # Extraction of the cover pictures of all books
 
-    	save_books_pictures_for_category(category_urls)
+        save_books_pictures_for_category(category_urls)
