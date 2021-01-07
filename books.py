@@ -74,16 +74,16 @@ def get_book_description_from_url(book_url):
                          price_includ_tax, price_exclud_tax,
                          number_available, summary,
                          category, review_rating, picture_url]
-        book_description.extend(book_features)
+        book_description.append(book_features)
 
-        return book_features
+        return(book_description[-1])
 
 
-def save_book_description_to_csv(book_description):
-    """Function saving book description to CSV file"""
+def save_scraped_data_to_csv(data_description_list, file_name):
+    """Function saving scraped data - represented as a list - to CSV file"""
 
     try:
-        with open(book_name[0] + '.csv', 'w', newline='',
+        with open(file_name + '.csv', 'w', newline='',
                   encoding='utf-8-sig') as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(['Product Page URL',
@@ -91,9 +91,10 @@ def save_book_description_to_csv(book_description):
                              'Price Including Tax', 'Price Excluding Tax',
                              'Availability', 'Product Description',
                              'Category', 'Review Rating', 'Picture URL'])
-            writer.writerow(book_description)
+            writer.writerows(data_description_list)
     except FileNotFoundError:
         print("Scraped data cannot be saved to CSV file")
+
 
 # Testing function
 
@@ -102,4 +103,4 @@ if __name__ == '__main__':
     book_url = 'http://books.toscrape.com/catalogue/soumission_998/index.html'
     get_book_name(book_url)
     get_book_description_from_url(book_url)
-    save_book_description_to_csv(book_description)
+    save_scraped_data_to_csv(book_description, book_name[-1])
