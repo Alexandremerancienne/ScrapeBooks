@@ -20,12 +20,10 @@ from bs4 import BeautifulSoup
 from slugify import slugify
 
 
-book_name = []
-
-
 def get_book_name(book_url):
     """Function scraping the name of the category"""
 
+    book_name = []
     response = requests.get(book_url)
     if response.ok:
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -33,8 +31,7 @@ def get_book_name(book_url):
         name_of_book = slugify(name_of_book)
         book_name.append(name_of_book)
 
-
-book_description = []
+    return book_name
 
 
 def get_book_description_from_url(book_url):
@@ -49,6 +46,7 @@ def get_book_description_from_url(book_url):
     - Review rating
     - Picture URL"""
 
+    book_description = []
     response = requests.get(book_url)
     if response.ok:
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -76,7 +74,7 @@ def get_book_description_from_url(book_url):
                          category, review_rating, picture_url]
         book_description.append(book_features)
 
-        return(book_description[-1])
+        return(book_description)
 
 
 def save_scraped_data_to_csv(data_description_list, file_name):
@@ -101,6 +99,6 @@ def save_scraped_data_to_csv(data_description_list, file_name):
 
 if __name__ == '__main__':
     book_url = 'http://books.toscrape.com/catalogue/soumission_998/index.html'
-    get_book_name(book_url)
-    get_book_description_from_url(book_url)
-    save_scraped_data_to_csv(book_description, book_name[-1])
+    book_name = get_book_name(book_url)[0]
+    book_description = get_book_description_from_url(book_url)
+    save_scraped_data_to_csv(book_description, book_name)
