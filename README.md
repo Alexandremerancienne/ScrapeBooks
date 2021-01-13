@@ -21,7 +21,7 @@ As books are organized by category (50 categories overall), each category is rep
 * A CSV file with aforementioned information for all books within the same category.
 * Cover pictures of the books within the same category.
 
-The program uses the results and outputs of the fonctions defined by the two following programs :
+The main program (scraping_main_file.py) uses the results and outputs of the functions defined by the two following programs :
 
 * books.py (scraping useful information for any book of Books to Scrape website).
 * categories.py (scraping useful information for any category of Books to Scrape website).
